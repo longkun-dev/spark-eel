@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<sqls>
+    <build_se_client_info>
+        insert overwrite table spark_etl.se_client_info_step1
+        select client.id,
+               client.client_no,
+               client.client_name,
+               certificate.certificate_type_name,
+               client.certificate_number,
+               client.sex,
+               client.birthday,
+               region.region_name
+        from spark_etl.se_client_info client
+            left join spark_etl.se_certificate_type_tbl certificate
+                on client.certificate_type = certificate.certificate_type
+            left join spark_etl.se_region_tbl region
+                on client.region_code = region.region_code
+        order by client.client_no
+    </build_se_client_info>
+
+    <shield_se_client_info>
+        insert overwrite table spark_etl.se_client_info_step2
+        select id,
+               client_no,
+               client_name,
+               certificate_type_name,
+               shield_certificate_number(certificate_type_name, certificate_number) as certificate_number,
+               sex,
+               shield_birthday(birthday) as birthday,
+               region_name
+        from spark_etl.cache_build_se_client_info_step1
+        where 1 = 1
+    </shield_se_client_info>
+</sqls>

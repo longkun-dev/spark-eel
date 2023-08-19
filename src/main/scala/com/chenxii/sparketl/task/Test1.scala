@@ -1,8 +1,10 @@
 package com.chenxii.sparketl.task
 
+import org.apache.spark.SparkConf
+
 object Test1 {
 
   def main(args: Array[String]): Unit = {
-    println("hello world!")
+    val sparkConf = new SparkConf()
   }
 }

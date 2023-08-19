@@ -21,6 +21,40 @@ create table spark_etl.se_client_info
     stored as textfile;
 
 
+drop table if exists spark_etl.se_client_info_step1;
+create table spark_etl.se_client_info_step1
+(
+    id                 string comment '主键id',
+    client_no          string comment '客户号',
+    client_name        string comment '客户姓名',
+    certificate_type   string comment '证件类型',
+    certificate_number string comment '证件号码',
+    sex                string comment '性别',
+    birthday           string comment '出生日期(yyyy-MM-dd)'
+) partitioned by (region_code string comment '所属行政区编码')
+    row format delimited
+        fields terminated by ','
+        lines terminated by '\n'
+    stored as textfile;
+
+
+drop table if exists spark_etl.se_client_info_step2;
+create table spark_etl.se_client_info_step2
+(
+    id                 string comment '主键id',
+    client_no          string comment '客户号',
+    client_name        string comment '客户姓名',
+    certificate_type   string comment '证件类型',
+    certificate_number string comment '证件号码',
+    sex                string comment '性别',
+    birthday           string comment '出生日期(yyyy-MM-dd)'
+) partitioned by (region_code string comment '所属行政区编码')
+    row format delimited
+        fields terminated by ','
+        lines terminated by '\n'
+    stored as textfile;
+
+
 -- 证件类型码表
 drop table if exists spark_etl.se_certificate_type_tbl;
 create table spark_etl.se_certificate_type_tbl
@@ -77,6 +111,3 @@ create table spark_etl.se_currency_rate
     stats_date string comment '日期(yyyyMMdd)',
     rate       string comment '汇率'
 );
-
-
-
