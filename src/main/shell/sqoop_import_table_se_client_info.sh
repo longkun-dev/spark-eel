@@ -3,22 +3,15 @@
 start_date="$1"
 end_date="$2"
 yarn_job_queue=default
-jbdc_url=jdbc:postgresql://vm2:5432/spark_etl
 username=postgres
 password=secret
 
 database=spark_etl
+jbdc_url=jdbc:postgresql://1.117.115.130:5432/${database}
 table_name=se_client_info
 columns=id,client_no,client_name,certificate_type,certificate_number,sex,birthday,region_code
-query="select * from spark_etl.se_client_info"
+query="select * from public.se_client_info where 1 = 1 and \$CONDITIONS"
 
-#spark-submit --class com.chenxii.sparketl.task.XXXX \
-#  --executor-cores 1 \
-#  --executor-memory 200m \
-#  --total-executor-cores 1 \
-#  --driver memory 300m \
-#  --master yarn \
-#  --name sqoop_import_table_se_client_info \
 
 sqoop import \
   --connect "${jbdc_url}" \
@@ -29,8 +22,10 @@ sqoop import \
   --hive-table "${table_name}" \
   --columns "${columns}" \
   --query "${query}" \
-  --input-fields-terminated-by ',' \
-  --input-line-terminated-by '\n' \
+  --fields-terminated-by ',' \
+  --lines-terminated-by '\n' \
   --null-string "" \
   --hive-overwrite \
+    --delete-target-dir \
+  --target-dir "/sqoop/${database}/${table_name}/tmp" \
   --num-mappers 1

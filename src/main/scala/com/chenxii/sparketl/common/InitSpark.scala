@@ -1,6 +1,5 @@
 package com.chenxii.sparketl.common
 
-import com.chenxii.sparketl.task.BuildClientInfo
 import org.apache.spark.sql.SparkSession
 
 object InitSpark {
@@ -8,15 +7,15 @@ object InitSpark {
   /**
    * 初始化 spark session
    */
-  def main(array: Array[String]): Unit = {
+  def init(): SparkSession = {
 
-    val sparkSession = SparkSession.builder()
+    val sparkSession: SparkSession = SparkSession.builder()
       .master("yarn")
-      .config("hive.metastore.uris", "thrift://xxx:9083")
+      .config("hive.metastore.uris", "thrift://192.168.31.66:9083")
       .enableHiveSupport()
       .getOrCreate()
 
-    new BuildClientInfo(sparkSession)
+    sparkSession
   }
 
 }

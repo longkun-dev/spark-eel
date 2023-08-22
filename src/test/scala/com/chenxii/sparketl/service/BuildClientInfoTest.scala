@@ -1,4 +1,4 @@
-package com.chenxii.sparketl.task
+package com.chenxii.sparketl.service
 
 import java.io.FileInputStream
 import scala.xml.XML

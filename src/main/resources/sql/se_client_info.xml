@@ -16,6 +16,7 @@
                 on client.certificate_type = certificate.certificate_type
             left join spark_etl.se_region_tbl region
                 on client.region_code = region.region_code
+        where 1 = 1
         order by client.client_no
     </build_se_client_info>
 
@@ -31,5 +32,6 @@
                region_name
         from spark_etl.cache_build_se_client_info_step1
         where 1 = 1
+        order by client_no
     </shield_se_client_info>
 </sqls>

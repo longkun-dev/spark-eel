@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <sqls>
+    <drop_se_transaction_info_partition>
+        alter table spark_etl.se_transaction_info_step1 drop partition (transaction_date = '${startDate}')
+    </drop_se_transaction_info_partition>
+
     <build_se_transaction_info>
-        insert overwrite table spark_etl.se_client_info_step1
-        select client.id,
-               client.client_no,
+        insert overwrite table spark_etl.se_transaction_info_step1
+        select transaction.id,
+               transaction.transaction_no,
                client.client_name,
-               certificate.certificate_type_name,
-               client.certificate_number,
-               client.sex,
-               client.birthday,
-               region.region_name
-        from spark_etl.se_client_info client
-            left join spark_etl.se_certificate_type_tbl certificate
-                on client.certificate_type = certificate.certificate_type
-            left join spark_etl.se_region_tbl region
-                on client.region_code = region.region_code
-        order by client.client_no
+               currency.currency_name,
+               transaction.amount * rate.rate as amount,
+               regexp_replace(regexp_replace(transaction.transaction_date, '-', ''), '-', '') as transaction_date
+        from se_transaction_info transaction
+            left join se_client_info client
+                on transaction.client_no = client.client_no
+            left join se_currency_tbl currency
+                on transaction.currency = currency.currency
+            left join se_currency_rate rate
+                on currency.currency = rate.currency
+                    and transaction.transaction_date = rate.stats_date
+        where transaction_date = '${startDate}'
+        order by transaction.transaction_date, client.client_no
     </build_se_transaction_info>
 
     <shield_se_transaction_info>
-        insert overwrite table spark_etl.se_client_info_step2
-        select id,
-               client_no,
-               client_name,
-               certificate_type_name,
-               shield_certificate_number(certificate_type_name, certificate_number) as certificate_number,
-               sex,
-               shield_birthday(birthday) as birthday,
-               region_name
-        from spark_etl.cache_build_se_client_info
-        where 1 = 1
+        insert overwrite table spark_etl.se_transaction_info_step2
+        select *
+        from spark_etl.se_transaction_info_step1
+        where transaction_date = '${startDate}'
     </shield_se_transaction_info>
 </sqls>

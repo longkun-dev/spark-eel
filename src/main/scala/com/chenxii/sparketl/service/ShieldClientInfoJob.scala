@@ -1,18 +1,16 @@
-package com.chenxii.sparketl.task
+package com.chenxii.sparketl.service
 
+import com.chenxii.sparketl.common.InitSpark
 import com.chenxii.sparketl.utils.ShieldUtil
-import org.apache.spark.sql.SparkSession
 
 import java.io.FileInputStream
 import scala.xml.XML
 
-/**
- * shield
- */
-class ShieldClientInfo(sparkSession: SparkSession) {
+class ShieldClientInfoJob {
 
-  def ShieldClientInfo(): Unit = {
+  def run(): Unit = {
 
+    val sparkSession = InitSpark.init()
     val shieldUtil = new ShieldUtil()
 
     // 注册 UDF
@@ -26,5 +24,4 @@ class ShieldClientInfo(sparkSession: SparkSession) {
 
     sparkSession.stop()
   }
-
 }
