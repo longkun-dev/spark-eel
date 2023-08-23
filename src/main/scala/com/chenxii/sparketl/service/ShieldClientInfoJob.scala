@@ -8,7 +8,7 @@ import scala.xml.XML
 
 class ShieldClientInfoJob {
 
-  def run(): Unit = {
+  def run(paramMap: Map[String, String]): Unit = {
 
     val sparkSession = InitSpark.init()
     val shieldUtil = new ShieldUtil()
@@ -17,10 +17,16 @@ class ShieldClientInfoJob {
     sparkSession.udf.register("shield_certificate_number", shieldUtil.shieldCertificateNumber _)
     sparkSession.udf.register("shield_birthday", shieldUtil.shieldBirthday _)
 
-    val sqlFilePath = "src/main/resources/sql/se_client_info.xml"
+    val sqlFilePath = "sql/se_client_info.xml"
     val xml = XML.load(new FileInputStream(sqlFilePath))
-    val cacheTable = (xml \ "shield_se_client_info").map(x => x.text).head
-    sparkSession.sql(cacheTable)
+
+    val shieldClientInfoSQL = (xml \ "shield_se_client_info")
+      .map(x => x.text)
+      .head
+      .replaceAll("\\$\\{startDate}", paramMap.getOrElse("start_date", "20230801"))
+      .replaceAll("\\$\\{endDate}", paramMap.getOrElse("end_date", "20230901"))
+
+    sparkSession.sql(shieldClientInfoSQL)
 
     sparkSession.stop()
   }

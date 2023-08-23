@@ -26,6 +26,6 @@ sqoop import \
   --lines-terminated-by '\n' \
   --null-string "" \
   --hive-overwrite \
-    --delete-target-dir \
+  --delete-target-dir \
   --target-dir "/sqoop/${database}/${table_name}/tmp" \
   --num-mappers 1

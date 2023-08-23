@@ -1,5 +1,7 @@
 package com.chenxii.sparketl.service
 
+import com.chenxii.sparketl.utils.ParamUtil
+
 object BuildClientInfoService {
 
   def main(args: Array[String]): Unit = {
@@ -9,10 +11,8 @@ object BuildClientInfoService {
       System.exit(0)
     }
 
-    val paramsMap = Map()
-    paramsMap += ("startDate", args(0))
-    paramsMap += ("endDate", args(0))
+    val paramsMap = new ParamUtil().getParamMap(args)
 
-    new BuildClientInfoJob().run()
+    new BuildClientInfoJob().run(paramsMap)
   }
 }

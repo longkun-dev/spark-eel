@@ -7,22 +7,27 @@ import scala.xml.XML
 
 class BuildTransactionInfoJob {
 
-  def run(): Unit = {
+  def run(paramMap: Map[String, String]): Unit = {
 
-    val xmlFilePath = "src/main/resources/sql/se_transaction_info.xml"
+    val xmlFilePath = "sql/se_transaction_info.xml"
     val xml = XML.load(new FileInputStream(xmlFilePath))
 
-    val dropTransactionInfoPartitionSQL = (xml \ "drop_se_transaction_info_partition")
+    val dropTransactionInfoPartitionSQL = (xml \ "drop_se_transaction_info_partition_step1")
       .map(x => x.text)
       .head
-      .replaceAll("\\$\\{startDate}", "")
+      .replaceAll("\\$\\{startDate}", paramMap.getOrElse("start_date", "20230801"))
+      .replaceAll("\\$\\{endDate}", paramMap.getOrElse("end_date", "20230901"))
 
     val buildTransactionInfoSQL = (xml \ "build_se_transaction_info")
       .map(x => x.text)
       .head
-      .replaceAll("\\$\\{startDate}", "")
+      .replaceAll("\\$\\{startDate}", paramMap.getOrElse("start_date", "20230801"))
+      .replaceAll("\\$\\{endDate}", paramMap.getOrElse("end_date", "20230901"))
 
     val sparkSession = InitSpark.init()
+
+    sparkSession.sql("hive.exec.dynamic.partition=true;")
+    sparkSession.sql("hive.exec.dynamic.partition.mode=nonstric;")
 
     // 删除分区
     sparkSession.sql(dropTransactionInfoPartitionSQL)
