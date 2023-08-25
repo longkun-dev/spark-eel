@@ -2,15 +2,14 @@ package com.chenxii.sparketl.service
 
 import com.chenxii.sparketl.common.InitSpark
 
-import java.io.FileInputStream
 import scala.xml.XML
 
 class BuildTransactionInfoJob {
 
   def run(paramMap: Map[String, String]): Unit = {
 
-    val xmlFilePath = "sql/se_transaction_info.xml"
-    val xml = XML.load(new FileInputStream(xmlFilePath))
+    val inputStream = this.getClass.getClassLoader.getResourceAsStream("sql/se_transaction_info.xml")
+    val xml = XML.load(inputStream)
 
     val dropTransactionInfoPartitionSQL = (xml \ "drop_se_transaction_info_partition_step1")
       .map(x => x.text)
@@ -26,8 +25,8 @@ class BuildTransactionInfoJob {
 
     val sparkSession = InitSpark.init()
 
-    sparkSession.sql("hive.exec.dynamic.partition=true;")
-    sparkSession.sql("hive.exec.dynamic.partition.mode=nonstric;")
+    sparkSession.sql("set hive.exec.dynamic.partition=true;")
+    sparkSession.sql("set hive.exec.dynamic.partition.mode=nonstrict;")
 
     // 删除分区
     sparkSession.sql(dropTransactionInfoPartitionSQL)

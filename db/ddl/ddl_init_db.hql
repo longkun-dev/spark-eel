@@ -24,14 +24,14 @@ create table spark_etl.se_client_info
 drop table if exists spark_etl.se_client_info_step1;
 create table spark_etl.se_client_info_step1
 (
-    id                 string comment '主键id',
-    client_no          string comment '客户号',
-    client_name        string comment '客户姓名',
-    certificate_type   string comment '证件类型',
-    certificate_number string comment '证件号码',
-    sex                string comment '性别',
-    birthday           string comment '出生日期(yyyy-MM-dd)',
-    region_name        string comment '所属区域'
+    id                    string comment '主键id',
+    client_no             string comment '客户号',
+    client_name           string comment '客户姓名',
+    certificate_type_name string comment '证件类型',
+    certificate_number    string comment '证件号码',
+    sex                   string comment '性别',
+    birthday              string comment '出生日期(yyyy-MM-dd)',
+    region_name           string comment '所属区域'
 ) row format delimited
     fields terminated by ','
     lines terminated by '\n'
@@ -41,14 +41,14 @@ create table spark_etl.se_client_info_step1
 drop table if exists spark_etl.se_client_info_step2;
 create table spark_etl.se_client_info_step2
 (
-    id                 string comment '主键id',
-    client_no          string comment '客户号',
-    client_name        string comment '客户姓名',
-    certificate_type   string comment '证件类型',
-    certificate_number string comment '证件号码',
-    sex                string comment '性别',
-    birthday           string comment '出生日期(yyyy-MM-dd)',
-    region_name        string comment '所属区域'
+    id                    string comment '主键id',
+    client_no             string comment '客户号',
+    client_name           string comment '客户姓名',
+    certificate_type_name string comment '证件类型',
+    certificate_number    string comment '证件号码',
+    sex                   string comment '性别',
+    birthday              string comment '出生日期(yyyy-MM-dd)',
+    region_name           string comment '所属区域'
 ) row format delimited
     fields terminated by ','
     lines terminated by '\n'

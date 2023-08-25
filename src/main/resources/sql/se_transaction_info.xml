@@ -14,24 +14,29 @@
         select transaction.id,
                transaction.transaction_no,
                client.client_name,
-               currency.currency_name,
-               transaction.amount * rate.rate as amount,
+               currency_tbl.currency_name,
+               cast(cast(transaction.amount as double) * cast(rate.rate as double) as decimal(10, 2)) as amount,
                regexp_replace(regexp_replace(transaction.transaction_date, '-', ''), '-', '') as transaction_date
-        from se_transaction_info transaction
-            left join se_client_info client
+        from spark_etl.se_transaction_info transaction
+            left join spark_etl.se_client_info client
                 on transaction.client_no = client.client_no
-            left join se_currency_tbl currency
-                on transaction.currency = currency.currency
-            left join se_currency_rate rate
-                on currency.currency = rate.currency
-                    and transaction.transaction_date = rate.stats_date
-        where transaction_date = '${startDate}'
+            left join spark_etl.se_currency_tbl currency_tbl
+                on transaction.currency = currency_tbl.currency
+            left join spark_etl.se_currency_rate rate
+                on currency_tbl.currency = rate.currency
+                    and transaction.transaction_date = regexp_replace(regexp_replace(rate.stats_date, '-', ''), '-', '')
+        where regexp_replace(regexp_replace(transaction.transaction_date, '-', ''), '-', '') = '${startDate}'
         order by transaction.transaction_date, client.client_no
     </build_se_transaction_info>
 
     <shield_se_transaction_info>
         insert overwrite table spark_etl.se_transaction_info_step2 partition (transaction_date)
-        select *
+        select id,
+               transaction_no,
+               client_name,
+               currency_name,
+               amount,
+               transaction_date
         from spark_etl.se_transaction_info_step1
         where transaction_date = '${startDate}'
     </shield_se_transaction_info>

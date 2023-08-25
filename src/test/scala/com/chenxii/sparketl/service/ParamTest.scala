@@ -13,6 +13,10 @@ object ParamTest {
       println("val: " + paramItem(1))
     }
 
+    val paramMap: Map[String, String] = Map(("start_date", "20230801"))
+    val value = paramMap.getOrElse("start_date", "null value")
+    println("value: " + value)
+
     val sqlFilePath = "src/main/resources/sql/se_client_info.xml"
     val xml = XML.load(new FileInputStream(sqlFilePath))
     val buildClientInfoSQL = (xml \ "build_se_client_info")

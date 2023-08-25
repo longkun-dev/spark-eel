@@ -6,13 +6,7 @@ object BuildTransactionInfoService {
 
   def main(args: Array[String]): Unit = {
 
-    println("====== 调用参数start ======")
-
-    args.foreach(println)
-
-    println("====== 调用参数 end ======")
-
-    if (args.length != 3) {
+    if (args.length != 2) {
       println("用法: 请输入开始日期和结束日期(yyyyMMdd)")
       System.exit(0)
     }

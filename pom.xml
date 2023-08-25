@@ -91,7 +91,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.chenxii.sparketl.service.TestMain1</mainClass>
+                            <mainClass>com.chenxii.sparketl.service.BuildClientInfoService</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

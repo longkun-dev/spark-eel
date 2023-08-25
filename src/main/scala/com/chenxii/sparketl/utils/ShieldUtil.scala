@@ -3,7 +3,7 @@ package com.chenxii.sparketl.utils
 /**
  * 脱敏
  */
-class ShieldUtil {
+class ShieldUtil extends Serializable {
 
   /**
    * 屏蔽证件号码中的字符
